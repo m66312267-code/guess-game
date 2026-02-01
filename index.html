@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>Mobile Guess Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background:#0b1220;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+}
+
+.app{
+    width:100%;
+    max-width:390px;
+    height:100%;
+    background:#020617;
+    display:flex;
+    flex-direction:column;
+}
+
+.header{
+    padding:20px;
+    text-align:center;
+    font-size:22px;
+    font-weight:600;
+    background:#020617;
+    border-bottom:1px solid #1e293b;
+}
+
+.screen{
+    flex:1;
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+}
+
+.screen p{
+    opacity:.8;
+}
+
+input{
+    margin-top:25px;
+    padding:16px;
+    font-size:20px;
+    border:none;
+    border-radius:14px;
+    outline:none;
+    text-align:center;
+}
+
+button{
+    margin-top:15px;
+    padding:16px;
+    font-size:18px;
+    border:none;
+    border-radius:14px;
+    background:#3b82f6;
+    color:#fff;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+#msg{
+    margin-top:20px;
+    font-size:20px;
+    min-height:26px;
+}
+
+.footer{
+    padding:15px;
+    display:flex;
+    gap:10px;
+    border-top:1px solid #1e293b;
+}
+
+.footer button{
+    flex:1;
+    background:#1e293b;
+}
+
+.reset{
+    background:#ef4444;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+    <div class="header">🎯 Guess Game</div>
+
+    <div class="screen">
+        <p>اختار رقم من 1 لـ 100</p>
+
+        <input type="number" id="guess" placeholder="رقمك">
+
+        <button onclick="check()">جرب</button>
+
+        <div id="msg"></div>
+    </div>
+
+    <div class="footer">
+        <button onclick="resetGame()">🔄 إعادة</button>
+        <button class="reset" onclick="resetGame()">🆕 جديد</button>
+    </div>
+</div>
+
+<script>
+let secret = Math.floor(Math.random()*100)+1;
+
+function check(){
+    let g = Number(document.getElementById("guess").value);
+    let msg = document.getElementById("msg");
+
+    if(!g || g<1 || g>100){
+        msg.style.color="#facc15";
+        msg.innerHTML="دخل رقم صحيح";
+        return;
+    }
+
+    if(g === secret){
+        msg.style.color="#22c55e";
+        msg.innerHTML="🎉 كسبت!";
+    }else if(g < secret){
+        msg.style.color="#38bdf8";
+        msg.innerHTML="⬆️ أكبر شوية";
+    }else{
+        msg.style.color="#f87171";
+        msg.innerHTML="⬇️ أصغر شوية";
+    }
+}
+
+function resetGame(){
+    secret = Math.floor(Math.random()*100)+1;
+    document.getElementById("guess").value="";
+    document.getElementById("msg").innerHTML="";
+}
+</script>
+
+</body>
+</html>
