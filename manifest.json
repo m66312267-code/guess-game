@@ -8,17 +8,17 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "PHOTOS/ALMAHS_icon.png",
+      "src": "ALMAHS_icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "PHOTOS/ALMAHS_icon.png",
+      "src": "ALMAHS_icon.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "PHOTOS/splash.png",
+      "src": "splash.png",
       "sizes": "512x512",
       "type": "image/png"
     }
