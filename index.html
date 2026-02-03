@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020617">
 <meta charset="UTF-8">
 <title>ALMAHS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 body{
     margin:0;
@@ -14,14 +11,15 @@ body{
     background:#0b1220;
     font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     color:#fff;
+    transition: background 0.3s, transform 0.1s;
 }
 
 #splash{
     position:fixed;
     top:0; left:0;
     width:100%; height:100%;
-  background:#020617 url('ALMAHS_icon.png') center center no-repeat;
-  background-size:contain;
+    background:#020617 url('ALMAHS_icon.png') center center no-repeat;
+    background-size:contain;
     z-index:9999;
 }
 
@@ -91,6 +89,21 @@ button:active{
     min-height:26px;
 }
 
+#stats{
+    margin-top:10px;
+    font-size:16px;
+    opacity:0.7;
+}
+
+#proximityBar{
+    width:0%;
+    height:10px;
+    background:#f97316;
+    margin-top:10px;
+    border-radius:5px;
+    transition: width 0.3s;
+}
+
 .footer{
     padding:15px;
     display:flex;
@@ -106,73 +119,141 @@ button:active{
 .reset{
     background:#ef4444;
 }
+
+#difficulty{
+    margin-top:15px;
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+    background:#1e293b;
+    color:#fff;
+}
 </style>
 </head>
-
 <body>
 
 <div id="splash"></div>
 
 <div id="gameContent">
 <div class="app">
-    <div class="header">تدريب وان اكس بت عشان الطياره وكده</div>
+    <div class="header"> تدريبات وان اكس بت ههههه</div>
 
     <div class="screen">
-        <p> اهبد رقم من 1 لـ 100</p>
-
-        <input type="number" id="guess" placeholder="اهبد هنا">
-
+        <p>اهبد رقم:</p>
+        <input type="number" id="guess" placeholder=" اهبده هنا">
         <button onclick="check()">جرب</button>
-
         <div id="msg"></div>
+        <div id="stats"></div>
+        <div id="proximityBar"></div>
+        <select id="difficulty" onchange="setDifficulty()">
+            <option value="100">سهل (1-100)</option>
+            <option value="500">متوسط (1-500)</option>
+            <option value="1000">صعب (1-1000)</option>
+        </select>
     </div>
 
     <div class="footer">
         <button onclick="resetGame()">🔄 إعادة</button>
-        <button class="reset" onclick="resetGame()">🆕 جديد</button>
+        <button class="reset" onclick="newGame()">🆕 جديد</button>
     </div>
 </div>
 </div>
 
 <script>
-let secret = Math.floor(Math.random()*100)+1;
+let maxNumber = 100;
+let secret = Math.floor(Math.random()*maxNumber)+1;
+let attempts = 0;
+let startTime = new Date();
+let score = 0;
 
 window.addEventListener('load', function(){
     setTimeout(function(){
         document.getElementById('splash').style.display = 'none';
         document.getElementById('gameContent').style.display = 'block';
-    }, 2000); // 2 ثانية splash
+    }, 2000);
 });
+
+function setDifficulty(){
+    maxNumber = Number(document.getElementById('difficulty').value);
+    newGame();
+}
+
+function shakeScreen(){
+    let body = document.body;
+    body.style.transform = "translateX(10px)";
+    setTimeout(()=>{body.style.transform="translateX(-10px)";}, 100);
+    setTimeout(()=>{body.style.transform="translateX(0)";}, 200);
+}
 
 function check(){
     let g = Number(document.getElementById("guess").value);
     let msg = document.getElementById("msg");
+    attempts++;
 
-    if(!g || g<1 || g>100){
+    if(!g || g<1 || g>maxNumber){
         msg.style.color="#facc15";
-        msg.innerHTML="بطل غباء وبص علي الرقم الي انتا كاتبه";
+        msg.innerHTML=`اكتب رقم بين 1 و ${maxNumber}`;
         return;
     }
 
+    let diff = Math.abs(secret - g);
+
     if(g === secret){
+        let timeTaken = Math.floor((new Date() - startTime)/1000);
         msg.style.color="#22c55e";
-        msg.innerHTML="🎉 كسبت!";
-    }else if(g < secret){
-        msg.style.color="red";
-        msg.innerHTML="مسعود بيمسي عليك وبيقولك كبر شويه";
+        msg.innerHTML=`🎉 كسبت! خمنت الرقم في ${attempts} محاولات و ${timeTaken} ثانية`;
+        document.body.style.background = "#16a34a";
+        score += 10;
     }else{
-        msg.style.color="#f87171";
-        msg.innerHTML="ابوهشام بيصبح عليك وبيقولك صغر يا عجل";
+        shakeScreen();
+        if(g < secret){
+            msg.style.color="#f87171";
+            msg.innerHTML=" هات رقم اكبر عشان مسعود لو عرف هياخدك عليه";
+        }else{
+            msg.style.color="#f87171";
+            msg.innerHTML="هات رقم اصغر بدل م ابوهشام يجيب اموبلي ويجيلك";
+        }
+
+        // لون تدريجي حسب القرب
+        if(diff <= maxNumber*0.1){
+            document.body.style.background = "#f97316"; // قريب جدًا - برتقالي
+        } else if(diff <= maxNumber*0.25){
+            document.body.style.background = "#facc15"; // قريب - أصفر
+        } else{
+            document.body.style.background = "#0b1220"; // بعيد - أساسي
+        }
+
+        // تلميح كل 5 محاولات
+        if(attempts % 5 === 0){
+            let hint = (secret % 2 === 0) ? "الرقم زوجي" : "الرقم فردي";
+            msg.innerHTML += `<br>تلميح: ${hint}`;
+        }
     }
+
+    // تحديث الشريط
+    let percent = Math.max(5, 100 - (diff/maxNumber)*100);
+    document.getElementById("proximityBar").style.width = percent + "%";
+
+    document.getElementById('stats').innerHTML = `المحاولات: ${attempts} | الرقم من 1-${maxNumber} | النقاط: ${score}`;
 }
 
 function resetGame(){
-    secret = Math.floor(Math.random()*100)+1;
+    secret = Math.floor(Math.random()*maxNumber)+1;
+    attempts=0;
+    startTime = new Date();
     document.getElementById("guess").value="";
     document.getElementById("msg").innerHTML="";
+    document.getElementById('stats').innerHTML="";
+    document.getElementById("proximityBar").style.width="0%";
+    document.body.style.background = "#0b1220";
+}
+
+function newGame(){
+    resetGame();
+    alert(`رقم جديد بين 1 و ${maxNumber} تم اختياره!`);
 }
 </script>
 
 </body>
 </html>
-
