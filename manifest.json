@@ -1,0 +1,26 @@
+{
+  "name": "ALMAHS Game",
+  "short_name": "ALMAHS",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "PHOTOS/ALMAHS_icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "PHOTOS/ALMAHS_icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "PHOTOS/splash.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
